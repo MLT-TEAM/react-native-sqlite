@@ -1,37 +1,50 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useState } from "react";
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import Nav from "@/components/bottomNavigation";
+import { Appbar } from "react-native-paper";
+import { insertTest, selectTest, useSelectAllTest } from "@/composable/testRepository";
+import { useSQLiteContext } from "expo-sqlite";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  // const colorScheme = useColorScheme();
+
+  const db = useSQLiteContext();
+
+  const { data, error } = useSelectAllTest();
+
+
+
+  const onSubmit = async () => {
+    const { changes, lastInsertRowId } = await insertTest(db, {
+      value: "hello world",
+      intValue: 1,
+    });
+
+
+    const { data : tests}  = await selectTest(db); 
+
+
+    console.log(tests)
+
+
+  };
+
+
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
-          ),
-        }}
-      />
-    </Tabs>
+    <>
+      <Appbar.Header>
+        <Appbar.BackAction
+          onPress={() => {
+            onSubmit();
+          }}
+        />
+        <Appbar.Content title="screen holder of the minimize this please" />
+        <Appbar.Action icon="calendar" onPress={() => {}} />
+        <Appbar.Action icon="magnify" onPress={() => {}} />
+      </Appbar.Header>
+
+      <Nav />
+    </>
   );
 }
