@@ -17,10 +17,10 @@ export async function migrateDbIfNeeded(db: SQLite.SQLiteDatabase) {
 
     //? init database schema 
 
-    await db.execAsync(`
+     await db.execAsync(`
         PRAGMA journal_mode = 'wal';
-        CREATE TABLE IF NOT EXIST test (id INTEGER PRIMARY KEY NOT NULL, value TEXT NOT NULL, intValue INTEGER);
-`);
+        CREATE TABLE IF NOT EXISTS test (id INTEGER PRIMARY KEY NOT NULL, value TEXT NOT NULL, intValue INTEGER);
+    `);
     await db.runAsync(
       "INSERT INTO test (value, intValue) VALUES (?, ?)",
       "hello",
